@@ -127,10 +127,13 @@ class Blockchain{
 
   // Get block height
     getBlockHeight(){
+		let blockHeight = 0;
 		return new Promise((resolve) => {
             db.getBlocksCount().then(function(value){
-							//	console.log("blockHeight sent to getBlock :" + blockHeight);
-								resolve(value);
+				//	blockHeight is the # of blocks before the block;
+				blockHeight = value-1;
+				console.log("blockHeight :" + blockHeight);
+				resolve(blockHeight);
             });
         })
     }
@@ -236,10 +239,10 @@ class Blockchain{
 							}
 							else {
 								if (errorLog.length>0) {
-									//at the end send the value false if there are errors
+									//at the end send the errorlog if there are errors
 									// console.log('Block errors = ' + errorLog.length);
 									// console.log('Blocks: '+errorLog);
-									resolve(false);
+									resolve(errorLog);
 								} else {
 									console.log('No errors detected');
 									resolve(true);
@@ -248,8 +251,8 @@ class Blockchain{
 						}
 					})
 					.catch((e) => {
-							console.log("Error **: " + e);
-							resolve(false);
+							console.log("Exception **: " + e);
+							resolve(e);
 					});
 
 				})
@@ -262,23 +265,23 @@ class Blockchain{
 	let blockchain = new Blockchain();
 
 
-	for (var i = 1; i <= 4; i++) {
-		   await blockchain.addBlock(new Block("test data chk chk" + i))
-		   .then(function(res){
-			   console.log("added block" + res);
+	// for (var i = 1; i <= 4; i++) {
+	// 	   await blockchain.addBlock(new Block("test data chk chk" + i))
+	// 	   .then(function(res){
+	// 		   console.log("added block" + res);
 		
-			});
+	// 		});
 
 
-	}
+	// }
 
-	await blockchain.getBlockHeight().then(function(result){
-		console.log("bcheight :" + result);
-	});
+	// await blockchain.getBlockHeight().then(function(result){
+	// 	console.log("bcheight :" + result);
+	// });
 
-	blockchain.validateChain().then(function(value){
+	await blockchain.validateChain().then(function(value){
 			console.log("block chain validation + " + value);
-		});
+	});
 
 
 	//await  blockchain.validateBlock(1).then(function(value){
